@@ -19,7 +19,9 @@ from film
 order by length asc;
 
 -- Encuentra el nombre y apellido de los actores con ‘Allen’ en su apellido.
-select concat(first_name, ' ', last_name) as nombre_actor
+select 
+	first_name,
+	last_name 
 from actor 
 where last_name like '%Allen%';
 
