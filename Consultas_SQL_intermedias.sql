@@ -30,11 +30,11 @@ from actor;
 -- Muestra los números de alquileres por día, ordenados de forma descendente.
 -- Uso la funcion date para poder quedarme unicamente con la fecha (el dia) sin importar las horas ya que sino puede aparecer el mismo dia en varios registros diferentes por disponer de distintas horas
 select 
-	count(*) as numero_alquileres,
+	count(date(rental_date)) as numero_alquileres,
 	date(rental_date) as dia_alquiler
 from rental 
-group by dia_alquiler 
-order by numero_alquileres desc;
+group by 2 
+order by 1 desc;
 
 -- Encuentra las películas con una duración superior al promedio.
 select title 
@@ -44,10 +44,10 @@ where length > (select avg(length) from film);
 -- Averigua el número de alquileres registrados por mes.
 -- Utilizo la funcion date_trunc para poder contar y agrupar únicamente por mes
 select 
-	count(*) as numero_alquileres,
+	count(date_trunc('month', rental_date)) as numero_alquileres,
 	date_trunc('month', rental_date) as mes_alquiler
 from rental 
-group by mes_alquiler;
+group by 2;
 
 -- Encuentra el promedio, la desviación estándar y la varianza del total pagado.
 select 
@@ -76,7 +76,7 @@ having count(f.film_id) > 40;
 
 -- Obtén todas las películas y, si están disponibles en el inventario, muestra la cantidad disponible.
 select 
-	f.title,
+	f.title as titulo,
 	count(i.inventory_id) as cantidad_disponible
 from film f
 join inventory i on f.film_id = i.film_id
@@ -85,26 +85,26 @@ group by f.title;
 -- Obtén los actores y el número de películas en las que han actuado.
 select 
 	concat(a.first_name, ' ', a.last_name) as nombre_actor,
-	count(f.film_id) as num_peliculas
+	count(fa.film_id) as num_peliculas
 from actor a
 join film_actor fa on a.actor_id = fa.actor_id
-join film f on fa.film_id = f.film_id
 group by a.actor_id;
 
 -- Obtén todas las películas con sus actores asociados, incluso si algunas no tienen actores.
 select 
-	f.title,
+	f.title as titulo,
 	concat(a.first_name, ' ', a.last_name) as nombre_actor
 from film f
 left join film_actor fa on f.film_id = fa.film_id 
 left join actor a on fa.actor_id = a.actor_id;
 
 -- Encuentra los 5 clientes que más dinero han gastado.
+-- En algunas consultas escribo el order by/ group by con los numeros indicando la posicion de los campos en la select y en otros directamente con los campos calculados o el alias
 select 
 	concat(c.first_name, ' ', c.last_name) as nombre_cliente,
 	sum(p.amount) as dinero_gastado
 from customer c 
 join payment p on c.customer_id = p.customer_id
 group by c.customer_id
-order by dinero_gastado desc
+order by 2 desc
 limit 5;
