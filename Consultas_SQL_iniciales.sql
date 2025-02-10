@@ -26,9 +26,10 @@ from actor
 where last_name like '%Allen%';
 
 -- Encuentra la cantidad total de películas en cada clasificación de la tabla film y muestra la clasificación junto con el recuento.
+-- Uso count(*) para poder obtener información también sobre cuantos registros nulos (si los hay), hay en la columna rating
 select 
 	rating as clasificacion, 
-	count(rating) as recuento
+	count(*) as recuento
 from film
 group by rating;
 
